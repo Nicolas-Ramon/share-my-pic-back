@@ -31,6 +31,20 @@ class PictureController {
     }
   }
 
+  // GET/picture
+  static async getAll(req, res, next) {
+    try {
+      const data = await Picture.getAll(req.query);
+      if (data.length === 0) {
+        return res.status(404).send("Nothing found!");
+      }
+      res.status(201).json(data);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send('Something bad happened...');
+    }
+  }
+
 }
 
 module.exports = PictureController;
