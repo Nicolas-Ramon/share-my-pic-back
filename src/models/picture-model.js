@@ -9,6 +9,22 @@ class Picture {
     return queryAsync(query, pictureData);
   }
 
+  static async getAll(filters) {
+    let query = "SELECT * FROM picture";
+    if (filters) {
+      const { title, user_id } = filters;
+      if (title && user_id) {
+        query += ` WHERE title LIKE ${connection.escape(`%${title}%`)}
+                   AND user_id LIKE ${connection.escape(`%${user_id}%`)}`;
+      } else if (title) {
+        query += ` WHERE title LIKE ${connection.escape(`%${title}%`)}`;
+      } else if (user_id) {
+        query += ` WHERE user_id LIKE ${connection.escape(`%${user_id}%`)}`;
+      }
+    }
+    return await queryAsync(query);
+  }
+
 }
 
 module.exports = Picture;
