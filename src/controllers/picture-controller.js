@@ -4,8 +4,8 @@ class PictureController {
 
   // POST/picture
   static async create(req, res, next) {
-    const { title, url, date, idUser } = req.body;
-    if (!title || !url || !date || !idUser) {
+    const { title, url, date, user_id } = req.body;
+    if (!title || !url) {
       return res.status(403).send("Please provide all the fields!");
     }
 
@@ -13,7 +13,7 @@ class PictureController {
       title,
       url,
       date,
-      user_id: idUser,
+      user_id,
     };
 
     try {
@@ -23,7 +23,7 @@ class PictureController {
         title,
         url,
         date,
-        user_id: idUser,
+        user_id,
       });
     } catch (err) {
       console.log(err);
