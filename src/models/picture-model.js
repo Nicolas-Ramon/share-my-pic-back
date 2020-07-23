@@ -34,6 +34,11 @@ class Picture {
     return await queryAsync(query);
   }
 
+  static async delete(id) {
+    const query = "DELETE FROM picture WHERE id = ?";
+    return await queryAsync(query, id);
+  }
+
 }
 
 module.exports = Picture;

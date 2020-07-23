@@ -45,6 +45,21 @@ class PictureController {
     }
   }
 
+  // DELETE/picture/:id
+  static async delete(req, res, next) {
+    const { id } = req.query;
+    try {
+      const data = await Picture.delete(id);
+      if (data.affectedRows === 0) {
+        return res.status(404).send('No resource to delete at this id');
+      }
+      res.status(204).send('Pic correctly deleted');
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send('Something bad happened...');
+    }
+  }
+
 }
 
 module.exports = PictureController;
