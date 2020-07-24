@@ -60,6 +60,22 @@ class PictureController {
     }
   }
 
+  // PUT/picture/:id
+  static async update(req, res, next) {
+    const { id } = req.params;
+    const { title, url } = req.body;
+    try {
+      if (!title && !url) {
+        return res.status(403).send("Please provide at least one field!");
+      }
+      await Picture.update([req.body, id]);
+      res.status(201).json({ id: id, ...req.body });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send('Something bad happened...');
+    }
+  }
+
 }
 
 module.exports = PictureController;
