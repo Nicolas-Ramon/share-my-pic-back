@@ -39,6 +39,11 @@ class Picture {
     return await queryAsync(query, id);
   }
 
+  static async update(pictureData) {
+    const query = "UPDATE picture SET ? WHERE id = ?";
+    return await queryAsync(query, pictureData);
+  }
+
 }
 
 module.exports = Picture;
