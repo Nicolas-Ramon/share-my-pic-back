@@ -10,39 +10,51 @@ class Picture {
   }
 
   static async getAll(filters) {
-    let query = `SELECT title, url, date, user_id, name FROM picture AS p 
-                JOIN user AS u 
-                ON p.user_id = u.id 
-                ORDER BY date DESC`;
+    let query = `SELECT p.id, title, url, date, user_id, name, req.nblike
+                 FROM picture AS p
+                 JOIN user AS u
+                 ON p.user_id = u.id
+                 LEFT JOIN (SELECT picture AS pic, COUNT(user) AS nblike FROM favorite GROUP BY picture) AS req
+                 ON p.id = req.pic
+                 ORDER BY date DESC`;
 
     if (filters) {
       const { title, name, user_id, id } = filters;
       if (title && name) {
-        query = `SELECT title, url, date, user_id, name FROM picture AS p 
-                JOIN user AS u 
-                ON p.user_id = u.id  
-                WHERE title LIKE ${connection.escape(`%${title}%`)} 
-                AND name LIKE ${connection.escape(`%${name}%`)}
-                ORDER BY date DESC`;
+        query = `SELECT p.id, title, url, date, user_id, name, req.nblike
+                 FROM picture AS p
+                 JOIN user AS u
+                 ON p.user_id = u.id
+                 LEFT JOIN (SELECT picture AS pic, COUNT(user) AS nblike FROM favorite GROUP BY picture) AS req
+                 ON p.id = req.pic
+                 WHERE title LIKE ${connection.escape(`%${title}%`)} 
+                 AND name LIKE ${connection.escape(`%${name}%`)}
+                 ORDER BY date DESC`;
       } else if (title) {
-        query = `SELECT title, url, date, user_id, name FROM picture AS p 
-                JOIN user AS u 
-                ON p.user_id = u.id  
-                WHERE title LIKE ${connection.escape(`%${title}%`)} 
-                ORDER BY date DESC`;
+        query = `SELECT p.id, title, url, date, user_id, name, req.nblike
+                 FROM picture AS p
+                 JOIN user AS u
+                 ON p.user_id = u.id
+                 LEFT JOIN (SELECT picture AS pic, COUNT(user) AS nblike FROM favorite GROUP BY picture) AS req
+                 ON p.id = req.pic 
+                 WHERE title LIKE ${connection.escape(`%${title}%`)} 
+                 ORDER BY date DESC`;
       } else if (name) {
-        query = `SELECT title, url, date, user_id, name FROM picture AS p 
-                JOIN user AS u 
-                ON p.user_id = u.id  
-                WHERE name LIKE ${connection.escape(`%${name}%`)} 
-                ORDER BY date DESC`;
+        query = `SELECT p.id, title, url, date, user_id, name, req.nblike
+                 FROM picture AS p
+                 JOIN user AS u
+                 ON p.user_id = u.id
+                 LEFT JOIN (SELECT picture AS pic, COUNT(user) AS nblike FROM favorite GROUP BY picture) AS req
+                 ON p.id = req.pic  
+                 WHERE name LIKE ${connection.escape(`%${name}%`)} 
+                 ORDER BY date DESC`;
       } else if (user_id) {
         query = `SELECT * FROM picture 
-                WHERE user_id LIKE ${connection.escape(`${user_id}`)}
-                ORDER BY date DESC`;
+                 WHERE user_id LIKE ${connection.escape(`${user_id}`)}
+                 ORDER BY date DESC`;
       } else if (id) {
         query = `SELECT * FROM picture 
-                WHERE id LIKE ${connection.escape(`${id}`)}`;
+                 WHERE id LIKE ${connection.escape(`${id}`)}`;
       }
     }
     return await queryAsync(query);
